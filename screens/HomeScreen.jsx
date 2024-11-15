@@ -33,8 +33,7 @@ const HomeScreen = () => {
       showsVerticalScrollIndicator = {false}
       contentContainerStyle = {{paddingBottom: 10}}
       >
-a
-        {/* <TrendingMovies data = {trending}  /> */}
+        <TrendingMovies data = {trending}  />
 
       </ScrollView>
     </CustomSafeAreaView>
