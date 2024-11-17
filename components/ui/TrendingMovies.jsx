@@ -1,8 +1,15 @@
 import { View, Text, useWindowDimensions, TouchableWithoutFeedback, Image, Animated, FlatList } from 'react-native';
 import React, { useRef, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 
 const TrendingMovies = ({data}) => {
+
+  const navigation = useNavigation();
+
+  const handleClick = () => {
+         navigation.navigate('Movie', data)
+  };
 
     let {width, height} = useWindowDimensions();
     const ITEM_SIZE = width*0.6;
