@@ -11,7 +11,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { color } from "@/constant/Color";
 
-const MovieList = ({ title, data }) => {
+const MovieList = ({ title, data, hideSeeAll }) => {
   const { width, height } = useWindowDimensions();
 
   const navigation = useNavigation();
@@ -23,9 +23,14 @@ const MovieList = ({ title, data }) => {
       <View className="flex-row justify-between items-center">
         <Text className="text-white text-xl">{title}</Text>
 
-        <TouchableOpacity>
-          <Text className=" text-lg" style = {{color:color.themeColor}} >See All</Text>
-        </TouchableOpacity>
+        { 
+        !hideSeeAll && (
+          <TouchableOpacity>
+            <Text className=" text-lg" style={{ color: color.themeColor }}>
+              See All
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView
@@ -37,7 +42,7 @@ const MovieList = ({ title, data }) => {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() => navigation.navigate("Movie", data)}
+              onPress={() => navigation.push("Movie", data)}
             >
               <View className="space-y-1 mr-4 mt-4">
                 <Image
@@ -47,10 +52,10 @@ const MovieList = ({ title, data }) => {
                 />
 
                 <Text className=" text-white text-md ">
-                    {
-                        movieName?.length> 14 ? movieName.slice(0,14) + '...' : movieName
-                    }
-                    </Text>
+                  {movieName?.length > 14
+                    ? movieName.slice(0, 14) + "..."
+                    : movieName}
+                </Text>
               </View>
             </TouchableOpacity>
           );
