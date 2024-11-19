@@ -10,13 +10,12 @@ import {
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { color } from "@/constant/Color";
+import { imgPath185, unavaiblePoster } from "../../api/movieDB";
 
 const MovieList = ({ title, data, hideSeeAll }) => {
   const { width, height } = useWindowDimensions();
 
   const navigation = useNavigation();
-
-  let movieName = "Dragon Home";
 
   return (
     <View className="mb-8 space-y-4">
@@ -42,19 +41,19 @@ const MovieList = ({ title, data, hideSeeAll }) => {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() => navigation.push("Movie", data)}
+              onPress={() => navigation.push("Movie", info)}
             >
-              <View className="space-y-1 mr-4 mt-4">
+              <View className="gap-y-3 mr-4 mt-4">
                 <Image
-                  source={require("../../assets/images/poster.jpg")}
+                  source={{uri: imgPath185(info.poster_path) || unavaiblePoster }}
                   className="rounded-2xl"
                   style={{ width: width * 0.33, height: height * 0.22 }}
                 />
 
                 <Text className=" text-white text-md ">
-                  {movieName?.length > 14
-                    ? movieName.slice(0, 14) + "..."
-                    : movieName}
+                  {info?.title?.length > 14
+                    ? info?.title.slice(0, 14) + "..."
+                    : info?.title}
                 </Text>
               </View>
             </TouchableOpacity>

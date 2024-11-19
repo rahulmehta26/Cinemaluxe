@@ -16,20 +16,47 @@ import { LinearGradient } from "expo-linear-gradient";
 import Cast from "../components/ui/Cast";
 import MovieList from "../components/ui/MovieList";
 import Loading from '../components/global/Loading';
+import { fetchMovieCredit, fetchMovieDetails, fetchSimilarMovies, imgPath185, imgPath500, unavaiblePoster } from "../api/movieDB";
 
 const MovieScreen = () => {
   const { width, height } = useWindowDimensions();
 
-  const { params: data } = useRoute();
+  const { params: info } = useRoute();
 
-  const movieName = "The Boy";
 
   const [isFavourites, setIsFavourites] = useState(false);
-  const [cast, setCast] = useState([1, 2, 3, 4, 5, 6]);
-  const [similarMovie, setSimilarMovie] = useState([1, 2, 3, 4, 5, 6]);
-  const [loading, setLoading] = useState(false)
+  const [cast, setCast] = useState([]);
+  const [similarMovie, setSimilarMovie] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState([]);
 
-  useEffect(() => {}, [data]);
+  useEffect(() => {
+    setLoading(true);
+    getMovieDetails(info.id);
+    getMovieCredits(info.id);
+    getSimilarMovie(info.id);
+  }, [info]);
+
+  const getMovieDetails = async id => {
+    const data = await  fetchMovieDetails(id)
+    if(data) setMovie(data)
+    setLoading(false);
+
+  }
+
+  const getMovieCredits = async id => {
+    const data = await  fetchMovieCredit(id)
+    if(data && data.cast ) setCast(data.cast)
+    setLoading(false);
+
+  }
+
+  const getSimilarMovie = async id => {
+    const data = await  fetchSimilarMovies(id)
+    if(data && data.results ) setSimilarMovie(data.results)
+    setLoading(false);
+
+  }
 
   return (
     <SafeAreaView className="bg-neutral-800 flex-1 ">
@@ -57,7 +84,7 @@ const MovieScreen = () => {
        
        <View>
           <Image
-            source={require("../assets/images/poster.jpg")}
+            source={{uri: imgPath500(movie?.poster_path) || unavaiblePoster }}
             style={{
               width: "100%",
               height: height * 0.55,
@@ -82,32 +109,38 @@ const MovieScreen = () => {
         }
 
 
-        <View className="space-y-4" style={{ marginTop: -(height * 0.09) }}>
+        <View className="gap-y-2" style={{ marginTop: -(height * 0.13) }}>
           <Text className="text-white text-center text-[2.5rem] font-bold tracking-wider">
-            {movieName}
+            {movie?.title}
           </Text>
 
-          <Text className="text-neutral-400 font-semibold text-base text-center ">
-            Released • 2020 • 170 min
+          <Text className="text-neutral-400 font-bold text-base text-center ">
+            {movie?.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min
           </Text>
 
           <View className="flex-row justify-center mx-4 space-x-2">
-            <Text className="text-neutral-400 font-semibold text-base text-center">
-              Action •
-            </Text>
 
-            <Text className="text-neutral-400 font-semibold text-base text-center">
-              Thrill •
-            </Text>
+            {
+              movie?.genres?.map((info, index) =>  {
 
-            <Text className="text-neutral-400 font-semibold text-base text-center">
-              Comedy
-            </Text>
+                let showDot = index + 1 != movie.genres.length;
+
+                return(
+                  <Text key={index} className="text-neutral-400 mx-1 font-bold text-base text-center">
+                  {info?.name} { showDot && "•"}
+                </Text>
+                )
+              }
+
+              )
+            }
+
           </View>
 
           <Text className="text-neutral-400 mx-4 tracking-wide">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
-            ab aliquam natus quasi aspernatur cumque!
+            {
+              movie?.overview
+            }
           </Text>
         </View>
 

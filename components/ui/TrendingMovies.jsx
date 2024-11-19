@@ -9,13 +9,11 @@ import {
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { imgPath500 } from "../../api/movieDB";
 
 const TrendingMovies = ({ data }) => {
-  const navigation = useNavigation();
 
-  const handleClick = () => {
-    navigation.navigate("Movie", data);
-  };
+  const navigation = useNavigation();
 
   let { width, height } = useWindowDimensions();
   const ITEM_SIZE = width * 0.6;
@@ -28,7 +26,7 @@ const TrendingMovies = ({ data }) => {
       <Animated.FlatList
         showsHorizontalScrollIndicator={false}
         data={data}
-        keyExtractor={(key) => data.key}
+        keyExtractor={(info, index) => info.id || index.toString() }
         horizontal
         contentContainerStyle={{
           alignItems: "center",
@@ -50,6 +48,9 @@ const TrendingMovies = ({ data }) => {
 };
 
 const MovieCard = ({ item, scrollX, index }) => {
+
+  const navigation = useNavigation();
+
   let { width, height } = useWindowDimensions();
   const ITEM_SIZE = width * 0.6;
   const inputRange = [
@@ -60,19 +61,22 @@ const MovieCard = ({ item, scrollX, index }) => {
 
   const scale = scrollX.interpolate({
     inputRange,
-    outputRange: [0.9, 1, 0.9],
+    outputRange: [0.8, 1, 0.8],
   });
 
   return (
-    <TouchableWithoutFeedback>
-      <Animated.View style={{ transform: [{ scale }] }}>
+    <TouchableWithoutFeedback 
+    onPress={() => navigation.navigate("Movie", item) }
+    >
+      <Animated.View style={{ transform: [{ scale }] }} className='mx-auto' >
         <Image
-          source={require("../../assets/images/bggs.jpg")}
+          source={{ uri: imgPath500(item.poster_path) }}
           style={{
             width: width * 0.7,
             height: height * 0.5,
+            resizeMode:'cover'
           }}
-          className="rounded-3xl mx-2 "
+          className="rounded-3xl px-2"
         />
       </Animated.View>
     </TouchableWithoutFeedback>

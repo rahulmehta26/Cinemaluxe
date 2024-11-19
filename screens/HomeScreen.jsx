@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomSafeAreaView from "../components/global/CustomSafeAreaView";
 import {
   Bars3CenterLeftIcon,
@@ -17,24 +17,57 @@ import MovieList from "../components/ui/MovieList";
 import { color } from "@/constant/Color";
 import { useNavigation } from "@react-navigation/native";
 import Loading from '../components/global/Loading';
+import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from "../api/movieDB";
 
 const android = Platform.OS == "android";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
 
-  const [trending, setTrendind] = useState([1, 2, 3, 4, 5]);
-  const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5]);
-  const [topRated, setTopRated] = useState([1, 2, 3, 4, 5]);
-  const [loading, setLoading] = useState(false)
+  const [trending, setTrendind] = useState([])
+  const [upcoming, setUpcoming] = useState([]);
+  const [topRated, setTopRated] = useState([]);
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+
+    getTrendingMovies();
+    getUpcomingMovies();
+    getTopRatedMovies();
+
+  }, [] );
+
+  const getTrendingMovies = async () => {
+    const data = await fetchTrendingMovies();
+
+    if(data && data.results) setTrendind(data.results);
+      
+    setLoading(false);
+  } 
+
+  const getUpcomingMovies = async () => {
+    const data = await fetchUpcomingMovies();
+
+    if(data && data.results) setUpcoming(data.results);
+      
+    setLoading(false);
+  } 
+
+  const getTopRatedMovies = async () => {
+    const data = await fetchTopRatedMovies();
+
+    if(data && data.results) setTopRated(data.results);
+      
+    setLoading(false);
+  } 
+
+  
   return (
     <CustomSafeAreaView>
       <View className='android ? "mb-3" : "-mb-2"'>
         <StatusBar barStyle="light-content" backgroundColor="#000" />
 
         <View className="flex-row justify-between items-center">
-          <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
 
           <Text className="text-white text-[1.65rem] font-bold">
             <Text
@@ -62,8 +95,11 @@ const HomeScreen = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-      >
-        <TrendingMovies data={trending} />
+        >
+        {
+          trending.length>0 && <TrendingMovies data={trending} />
+        }
+
 
         <MovieList title="Upcoming Movie" data={upcoming} />
 

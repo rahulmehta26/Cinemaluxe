@@ -2,15 +2,11 @@ import { View, ScrollView, Text, TouchableOpacity, Image, useWindowDimensions } 
 import React from 'react';
 import CustomSafeAreaView from '../global/CustomSafeAreaView';
 import { useNavigation } from '@react-navigation/native';
+import { imgPath185, unavaiblePerson } from '../../api/movieDB';
 
 const Cast = ({cast}) => {
 
     const navigation = useNavigation();
-
-    const {width, height} = useWindowDimensions
-
-    const name = 'Tillu';
-    const characterName = 'Tillu Singer';
 
   return (
     <CustomSafeAreaView>
@@ -25,43 +21,47 @@ const Cast = ({cast}) => {
         horizontal
         showsHorizontalScrollIndicator = {false}
         >
-            {
-                cast && cast.map((info, index) => {
 
-                    return(
-                        <TouchableOpacity 
-                        key={index} 
-                        className = 'mr-4 items-center '
-                        activeOpacity={0.8}
-                        onPress={() => navigation.navigate('Person', info) }
-                        >
+          {
+            cast.map((info, index) => {
 
-                            <View 
-                            className = 'overflow-hidden rounded-full w-20 h-20 items-center border border-neutral-400' 
-                            >
+              return(
+                <TouchableOpacity 
+                key={index} 
+                className = 'mr-4 items-center '
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('Person', info) }
+                >
 
-                            <Image 
-                            source={require('../../assets/images/poster.jpg')}
-                            className = "w-20 h-24 rounded-xl object-cover"                            
-                            />
-                            </View>
+                    <View 
+                    className = 'overflow-hidden rounded-full w-20 h-20 items-center border border-neutral-400' 
+                    >
+
+                    <Image 
+                    source={{uri : imgPath185(info.profile_path) || unavaiblePerson }}
+                    className = "w-20 h-24 rounded-xl object-cover"                            
+                    />
+                    </View>
 
 
-                             <Text className = 'text-white text-md font-semibold' >
-                                {
-                                    name.length>10 ? name.slice(0, 10) + '...' : name
-                                }
-                             </Text>
+                     <Text className = 'text-white text-md font-semibold' >
+                        {
+                            info?.name?.length>10 ? info?.name.slice(0, 10) + '...' : info?.name
+                        }
+                        
+                     </Text>
 
-                             <Text className = 'text-neutral-400 text-md font-semibold' >
-                                {
-                                    characterName.length>10 ? characterName.slice(0, 10) + '...' : characterName
-                                }
-                             </Text>
-                        </TouchableOpacity>
-                    )
-                } )
-            }
+                     <Text className = 'text-neutral-400 text-md font-semibold' >
+                        {
+                            info?.character?.length>10 ?info?.character.slice(0, 10) + '...' : info?.character
+                        }
+                        
+                     </Text>
+                </TouchableOpacity>
+              )
+            } )
+          }
+
         </ScrollView>
       </View>
     </CustomSafeAreaView>
