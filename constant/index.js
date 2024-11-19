@@ -1,4 +1,4 @@
-export const apiKey = "3db4df35fe282f11cef4e3f1d05c0516"
+export const apiKey = API_KEY
 export const apiBaseURL = "https://api.themoviedb.org/3"
 export const imgBaseURL500 = "https://image.tmdb.org/t/p/w500"
 export const imgBaseURL185 = "https://image.tmdb.org/t/p/w185"
